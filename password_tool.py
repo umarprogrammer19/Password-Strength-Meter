@@ -46,13 +46,13 @@ def check_password_strength(password):
             return "Very Strong"
 
 
-st.set_page_config(page_title="Password Tool", page_icon="🔐")
+st.set_page_config(page_title="Password Tool", page_icon="🔐", layout="wide")
 st.title("Password Generator and Strength Checker")
 
 col1, col2 = st.columns(2)
 
 with col1:
-    st.header("Password Generator")
+    st.subheader("🔑 Password Generator")
     length = st.slider("Password Length", min_value=8, max_value=32, value=12)
     use_uppercase = st.checkbox("Include Uppercase Letters", value=True)
     use_lowercase = st.checkbox("Include Lowercase Letters", value=True)
@@ -63,21 +63,23 @@ with col1:
         password = generate_password(
             length, use_uppercase, use_lowercase, use_numbers, use_special
         )
-        st.code(password)
-        st.markdown(
-            """
-            <button onclick="navigator.clipboard.writeText('{}')">Copy to Clipboard</button>
-        """.format(
-                password
-            ),
-            unsafe_allow_html=True,
+        if "Please select" in password:
+            st.error(password)
+        else:
+            st.text_area(
+                "Generated Password",
+                value=password,
+                height=70,
+                key="generated_password",
+            )
+            st.success("Password generated! Select and copy from the box above.")
+    with st.expander("💡 Tip"):
+        st.write(
+            "Use a mix of character types and longer length for stronger passwords."
         )
-    st.write(
-        "Tip: Use a mix of character types and longer length for stronger passwords."
-    )
 
 with col2:
-    st.header("Password Strength Checker")
+    st.subheader("🔍 Password Strength Checker")
     password_input = st.text_input("Enter Password", type="password")
 
     if st.button("Check Strength"):
@@ -93,4 +95,16 @@ with col2:
                 st.success(f"Password Strength: {strength}")
         else:
             st.warning("Please enter a password.")
-    st.write("Tip: Strong passwords are 12+ characters with multiple character types.")
+    with st.expander("💡 Tip"):
+        st.write("Strong passwords are 12+ characters with multiple character types.")
+
+st.markdown("---")
+
+st.markdown(
+    """
+    <div style="text-align: center; color: #666;">
+        <small>Password Tool by Umar Farooq | Powered by Streamlit</small>
+    </div>
+""",
+    unsafe_allow_html=True,
+)
